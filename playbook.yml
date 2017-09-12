@@ -1,0 +1,44 @@
+- hosts: localhost
+  gather_facts: 'no'
+  tasks:
+    - name: homebrew add repo
+      homebrew_tap: 'name={{ item }} state=present'
+      with_items:
+        - caskroom/cask
+        - wata727/tflint
+    - name: update homebrew
+      homebrew:
+        update_homebrew: 'yes'
+        upgrade_all: 'yes'
+    - name: Install development tools
+      homebrew: 'name={{ item.value }}'
+      loop_control:
+        label: '{{ item.key }}: {{ item.value|join('', '') }}'
+      with_dict:
+        general:
+          - git
+          - ripgrep
+          - git-flow
+          - hub
+          - gist
+          - jq
+          - keychain
+          - tree
+        python:
+          - pyenv
+          - pyenv-virtualenv
+          - flake8
+        node:
+          - nodenv
+          - node-build
+        go:
+          - go
+        terraform:
+          - tflint
+          - terraform
+        aws:
+          - awless
+          - awscli
+          - vault
+        db:
+          - postgres
